@@ -1,0 +1,49 @@
+openapi: 3.0.3
+
+info:
+  title: Sample API
+  version: 1.0.0
+  description: Sample API specification for Shadow API detection
+
+servers:
+  - url: http://localhost:8000
+
+paths:
+
+  /users:
+    get:
+      summary: Get all users
+      responses:
+        "200":
+          description: Successful response
+
+    post:
+      summary: Create a user
+      responses:
+        "201":
+          description: User created
+
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+
+    delete:
+      summary: Delete a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: User deleted
