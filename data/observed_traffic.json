@@ -1,0 +1,26 @@
+[
+  {
+    "method": "GET",
+    "path": "/users"
+  },
+  {
+    "method": "POST",
+    "path": "/users"
+  },
+  {
+    "method": "GET",
+    "path": "/users/101"
+  },
+  {
+    "method": "DELETE",
+    "path": "/users/101"
+  },
+  {
+    "method": "POST",
+    "path": "/admin/users"
+  },
+  {
+    "method": "GET",
+    "path": "/internal/debug"
+  }
+]
