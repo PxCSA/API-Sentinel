@@ -6,11 +6,12 @@ from bfla.detector import BFLADetector
 from bfla.models import BFLARequest
 from detection.classifier import ThreatClassifier
 from enforcement.enforcer import Enforcer
+from rate_limit.limiter import RateLimiter
 from .models import SecurityDecision
 
 
 class SecurityEngine:
-    """Coordinates BOLA, BFLA, classification, and enforcement."""
+    """Coordinates rate limiting, BOLA, BFLA, classification, and enforcement."""
 
     def __init__(
         self,
@@ -21,6 +22,7 @@ class SecurityEngine:
         self.bfla = BFLADetector(role_permissions)
         self.classifier = ThreatClassifier()
         self.enforcer = Enforcer()
+        self.rate_limiter = RateLimiter()
 
     def evaluate(
         self,
@@ -30,6 +32,17 @@ class SecurityEngine:
         path: str,
         object_id: str | None = None,
     ) -> SecurityDecision:
+
+        rate_result = self.rate_limiter.check(user_id)
+
+        if not rate_result.allowed:
+            return SecurityDecision(
+                allowed=False,
+                action="BLOCKED",
+                threat_type="RATE_LIMIT",
+                severity="HIGH",
+                reason=rate_result.reason,
+            )
 
         bola_result = self.bola.check(
             APIRequest(
