@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Sentinel Security Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <span class="brand-icon">SEC</span>
+            <div>
+                <h1>API Sentinel</h1>
+                <p>Security Engine Dashboard</p>
+            </div>
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            <span>Engine Online</span>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <div>
+                <p class="eyebrow">API SECURITY</p>
+                <h2>Security Request Evaluation</h2>
+                <p>
+                    Analyze API requests for authorization threats,
+                    rate limiting, and security violations.
+                </p>
+            </div>
+        </section>
+
+        <section class="dashboard-grid">
+
+            <div class="card request-card">
+                <div class="card-header">
+                    <div>
+                        <h3>Evaluate Request</h3>
+                        <p>Submit an API request to the Security Engine.</p>
+                    </div>
+                </div>
+
+                <form id="evaluate-form">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user_id">User ID</label>
+                            <input
+                                type="text"
+                                id="user_id"
+                                value="user-1"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select id="role">
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="method">Method</label>
+                            <select id="method">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="path">API Path</label>
+                            <input
+                                type="text"
+                                id="path"
+                                value="/api/profile"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="object_id">Object ID <span>(optional)</span></label>
+                        <input
+                            type="text"
+                            id="object_id"
+                            value="obj-1"
+                            placeholder="e.g. obj-1"
+                        >
+                    </div>
+
+                    <button type="submit" id="evaluate-btn">
+                        Evaluate Request
+                    </button>
+
+                </form>
+            </div>
+
+            <div class="card result-card">
+                <div class="card-header">
+                    <div>
+                        <h3>Security Decision</h3>
+                        <p>Latest request evaluation.</p>
+                    </div>
+                </div>
+
+                <div id="result-placeholder" class="result-placeholder">
+                    <div class="shield-large">SEC</div>
+                    <p>No request evaluated yet.</p>
+                </div>
+
+                <div id="result" class="result hidden">
+
+                    <div id="decision-badge" class="decision-badge">
+                        -
+                    </div>
+
+                    <div class="result-details">
+
+                        <div class="detail">
+                            <span>Threat Type</span>
+                            <strong id="threat-type">-</strong>
+                        </div>
+
+                        <div class="detail">
+                            <span>Severity</span>
+                            <strong id="severity">-</strong>
+                        </div>
+
+                        <div class="detail">
+                            <span>Action</span>
+                            <strong id="action">-</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="reason-box">
+                        <span>Reason</span>
+                        <p id="reason">-</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <section class="card quick-tests">
+            <div class="card-header">
+                <div>
+                    <h3>Quick Security Tests</h3>
+                    <p>Try common API security scenarios.</p>
+                </div>
+            </div>
+
+            <div class="quick-test-grid">
+
+                <button class="quick-test" data-test="allowed">
+                    <strong>Authorized Request</strong>
+                    <span>Expected: ALLOWED</span>
+                </button>
+
+                <button class="quick-test" data-test="bola">
+                    <strong>BOLA Attack</strong>
+                    <span>Expected: BLOCKED</span>
+                </button>
+
+                <button class="quick-test" data-test="bfla">
+                    <strong>BFLA Attack</strong>
+                    <span>Expected: BLOCKED</span>
+                </button>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>API Sentinel &copy; 2026 - Security Engine</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
