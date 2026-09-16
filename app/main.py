@@ -1,11 +1,13 @@
 import json
 from pathlib import Path
-from .inventory import generate_inventory
-from .discovery_engine import find_shadow_apis, build_inventory
 
 from fastapi import FastAPI
 
-from .discovery_engine import find_shadow_apis
+from .discovery_engine import (
+    find_shadow_apis,
+    find_zombie_apis,
+    build_inventory,
+)
 from .models import APIEndpoint, DiscoveryResult
 from .openapi_parser import parse_openapi
 
@@ -56,21 +58,30 @@ def discover_shadow_apis():
         for item in observed_data
     ]
 
-    # Find undocumented APIs
+    # Find undocumented Shadow APIs
     shadow = find_shadow_apis(
         documented,
         observed,
     )
 
+    # Find deprecated APIs still being used
+    zombie = find_zombie_apis(
+        documented,
+        observed,
+    )
+
+    # Build complete API inventory
     inventory = build_inventory(
         documented,
         observed,
         shadow,
+        zombie,
     )
 
     return DiscoveryResult(
         documented=documented,
         observed=observed,
         shadow=shadow,
+        zombie=zombie,
         inventory=inventory,
     )

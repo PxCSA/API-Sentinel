@@ -27,15 +27,16 @@ def parse_openapi(file_path: str) -> list[APIEndpoint]:
                 continue
 
             endpoints.append(
-                APIEndpoint(
-                    path=endpoint_path,
-                    method=method.upper(),
-                    source="openapi",
-                    description=(
-                        details.get("summary")
-                        or details.get("description")
-                    ),
-                )
+              APIEndpoint(
+                 path=endpoint_path,
+                 method=method.upper(),
+                 source="openapi",
+                 description=(
+                     details.get("summary")
+                     or details.get("description")
+         ),
+      deprecated=details.get("deprecated", False),
+) 
             )
 
     return endpoints

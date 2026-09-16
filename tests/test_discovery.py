@@ -1,4 +1,4 @@
-from app.discovery_engine import find_shadow_apis
+from app.discovery_engine import find_shadow_apis, find_zombie_apis
 from app.models import APIEndpoint
 
 
@@ -61,3 +61,58 @@ def test_shadow_api_detection():
 
     # /users/101 should match documented /users/{id}
     assert ("GET", "/users/{id}") not in shadow_paths
+
+
+def test_zombie_api_detection():
+    documented = [
+        APIEndpoint(
+            path="/users",
+            method="GET",
+            source="openapi",
+        ),
+        APIEndpoint(
+            path="/old-users",
+            method="GET",
+            source="openapi",
+            deprecated=True,
+        ),
+    ]
+
+    observed = [
+        APIEndpoint(
+            path="/users",
+            method="GET",
+            source="traffic",
+        ),
+        APIEndpoint(
+            path="/old-users",
+            method="GET",
+            source="traffic",
+        ),
+    ]
+
+    zombie = find_zombie_apis(documented, observed)
+
+    zombie_paths = {
+        (endpoint.method, endpoint.path)
+        for endpoint in zombie
+    }
+
+    assert ("GET", "/old-users") in zombie_paths
+
+
+def test_deprecated_api_not_used_is_not_zombie():
+    documented = [
+        APIEndpoint(
+            path="/old-users",
+            method="GET",
+            source="openapi",
+            deprecated=True,
+        ),
+    ]
+
+    observed = []
+
+    zombie = find_zombie_apis(documented, observed)
+
+    assert len(zombie) == 0

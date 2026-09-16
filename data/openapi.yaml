@@ -47,3 +47,11 @@ paths:
       responses:
         "204":
           description: User deleted
+
+  /old-users:
+    get:
+      summary: Legacy user endpoint
+      deprecated: true
+      responses:
+        "200":
+          description: Successful response
