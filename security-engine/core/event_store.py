@@ -22,6 +22,44 @@ class SecurityEventStore:
         with self._lock:
             return list(self._events)
 
+    def get_stats(self) -> dict:
+        with self._lock:
+            total_requests = len(self._events)
+
+            allowed_requests = sum(
+                1 for event in self._events
+                if event.allowed
+            )
+
+            blocked_requests = sum(
+                1 for event in self._events
+                if not event.allowed
+            )
+
+            bola_attacks = sum(
+                1 for event in self._events
+                if event.threat_type == "BOLA"
+            )
+
+            bfla_attacks = sum(
+                1 for event in self._events
+                if event.threat_type == "BFLA"
+            )
+
+            rate_limit_violations = sum(
+                1 for event in self._events
+                if event.threat_type == "RATE_LIMIT"
+            )
+
+            return {
+                "total_requests": total_requests,
+                "allowed_requests": allowed_requests,
+                "blocked_requests": blocked_requests,
+                "bola_attacks": bola_attacks,
+                "bfla_attacks": bfla_attacks,
+                "rate_limit_violations": rate_limit_violations,
+            }
+
     def clear(self) -> None:
         with self._lock:
             self._events.clear()
