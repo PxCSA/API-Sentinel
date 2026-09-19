@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from core.service import SecurityEngineService
 
 router = APIRouter()
+
 security_service = SecurityEngineService()
 
 
@@ -26,3 +27,8 @@ def evaluate(
         path=path,
         object_id=object_id,
     )
+
+
+@router.get("/events")
+def get_events():
+    return security_service.get_events()
