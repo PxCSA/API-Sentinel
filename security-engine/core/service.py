@@ -1,6 +1,8 @@
 from dataclasses import asdict
 
 from core.engine import SecurityEngine
+from core.event_store import SecurityEventStore
+from core.events import SecurityEvent
 
 
 class SecurityEngineService:
@@ -18,6 +20,8 @@ class SecurityEngineService:
             },
         )
 
+        self.event_store = SecurityEventStore()
+
     def evaluate(
         self,
         user_id: str,
@@ -34,4 +38,23 @@ class SecurityEngineService:
             object_id=object_id,
         )
 
-        return asdict(decision)
+        decision_dict = asdict(decision)
+
+        event = SecurityEvent.from_decision(
+            user_id=user_id,
+            role=role,
+            method=method,
+            path=path,
+            object_id=object_id,
+            decision=decision_dict,
+        )
+
+        self.event_store.add(event)
+
+        return decision_dict
+
+    def get_events(self) -> list[dict]:
+        return [asdict(event) for event in self.event_store.get_all()]
+
+    def clear_events(self) -> None:
+        self.event_store.clear()
