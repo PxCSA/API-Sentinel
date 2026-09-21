@@ -16,6 +16,9 @@ const methodInput = document.getElementById("method");
 const pathInput = document.getElementById("path");
 const objectIdInput = document.getElementById("object_id");
 
+const eventsContainer = document.getElementById("events-container");
+const refreshEventsButton = document.getElementById("refresh-events");
+
 
 async function evaluateRequest() {
     const payload = new URLSearchParams();
@@ -57,6 +60,84 @@ function displayResult(data) {
 }
 
 
+async function loadEvents() {
+    eventsContainer.innerHTML =
+        '<p class="events-empty">Loading security events...</p>';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/events`);
+
+        if (!response.ok) {
+            throw new Error(`Events API failed: ${response.status}`);
+        }
+
+        const events = await response.json();
+
+        if (!events.length) {
+            eventsContainer.innerHTML =
+                '<p class="events-empty">No security events recorded yet.</p>';
+            return;
+        }
+
+        eventsContainer.innerHTML = events
+            .slice()
+            .reverse()
+            .map((event) => {
+                const statusClass = event.allowed
+                    ? "event-allowed"
+                    : "event-blocked";
+
+                return `
+                    <div class="event-row ${statusClass}">
+                        <div class="event-main">
+
+                            <div class="event-status">
+                                ${event.allowed ? "ALLOWED" : "BLOCKED"}
+                            </div>
+
+                            <div class="event-info">
+                                <strong>
+                                    ${event.method} ${event.path}
+                                </strong>
+
+                                <span>
+                                    User: ${event.user_id}
+                                    · Role: ${event.role}
+                                    ${event.object_id
+                                        ? ` · Object: ${event.object_id}`
+                                        : ""}
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="event-meta">
+                            <span>
+                                ${event.threat_type || "NONE"}
+                            </span>
+
+                            <span>
+                                ${event.severity || "NONE"}
+                            </span>
+
+                            <small>
+                                ${event.timestamp}
+                            </small>
+                        </div>
+                    </div>
+                `;
+            })
+            .join("");
+
+    } catch (error) {
+        eventsContainer.innerHTML =
+            '<p class="events-empty">Unable to load security events.</p>';
+
+        console.error(error);
+    }
+}
+
+
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -67,7 +148,11 @@ form.addEventListener("submit", async (event) => {
 
     try {
         const data = await evaluateRequest();
+
         displayResult(data);
+
+        await loadEvents();
+
     } catch (error) {
         resultPlaceholder.classList.add("hidden");
         result.classList.remove("hidden");
@@ -76,10 +161,12 @@ form.addEventListener("submit", async (event) => {
         threatType.textContent = "-";
         severity.textContent = "-";
         action.textContent = "ERROR";
+
         reason.textContent =
             "Unable to connect to the Security Engine. Make sure the FastAPI server is running.";
 
         console.error(error);
+
     } finally {
         button.disabled = false;
         button.textContent = "Evaluate Request";
@@ -88,7 +175,9 @@ form.addEventListener("submit", async (event) => {
 
 
 document.querySelectorAll(".quick-test").forEach((button) => {
+
     button.addEventListener("click", () => {
+
         const test = button.dataset.test;
 
         if (test === "allowed") {
@@ -117,4 +206,12 @@ document.querySelectorAll(".quick-test").forEach((button) => {
 
         form.requestSubmit();
     });
+
 });
+
+
+refreshEventsButton.addEventListener("click", loadEvents);
+
+
+// Load existing events when dashboard opens
+loadEvents();

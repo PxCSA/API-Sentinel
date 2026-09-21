@@ -91,7 +91,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="object_id">Object ID <span>(optional)</span></label>
+                        <label for="object_id">
+                            Object ID <span>(optional)</span>
+                        </label>
                         <input
                             type="text"
                             id="object_id"
@@ -180,6 +182,24 @@
                     <span>Expected: BLOCKED</span>
                 </button>
 
+            </div>
+        </section>
+
+        <!-- Security Event History -->
+        <section class="card event-history">
+            <div class="card-header">
+                <div>
+                    <h3>Security Event History</h3>
+                    <p>Recent requests evaluated by the Security Engine.</p>
+                </div>
+
+                <button id="refresh-events" class="refresh-btn">
+                    Refresh
+                </button>
+            </div>
+
+            <div id="events-container" class="events-container">
+                <p class="events-empty">Loading security events...</p>
             </div>
         </section>
 
