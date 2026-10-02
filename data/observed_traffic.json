@@ -1,30 +1,37 @@
 [
   {
     "method": "GET",
-    "path": "/users"
+    "path": "/users",
+    "status_code": 200
   },
   {
     "method": "POST",
-    "path": "/users"
+    "path": "/users",
+    "status_code": 201
   },
   {
     "method": "GET",
-    "path": "/users/101"
+    "path": "/users/101",
+    "status_code": 200
   },
   {
     "method": "DELETE",
-    "path": "/users/101"
+    "path": "/users/101",
+    "status_code": 204
   },
   {
     "method": "POST",
-    "path": "/admin/users"
+    "path": "/admin/users",
+    "status_code": 403
   },
   {
     "method": "GET",
-    "path": "/internal/debug"
+    "path": "/internal/debug",
+    "status_code": 200
   },
   {
     "method": "GET",
-    "path": "/old-users"
+    "path": "/old-users",
+    "status_code": 200
   }
 ]
