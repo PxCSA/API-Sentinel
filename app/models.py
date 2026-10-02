@@ -1,21 +1,25 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
+
 class APIEndpoint(BaseModel):
     path: str
     method: str
     source: str
     description: Optional[str] = None
     deprecated: bool = False
+    status_code: Optional[int] = None
 
 
 class ShadowAPI(APIEndpoint):
     risk: str
     reason: str
 
+
 class ZombieAPI(APIEndpoint):
     risk: str
     reason: str
+
 
 class APIInventoryItem(BaseModel):
     path: str
@@ -33,3 +37,8 @@ class DiscoveryResult(BaseModel):
     shadow: List[ShadowAPI]
     zombie: List[ZombieAPI]
     inventory: List[APIInventoryItem]
+
+class TrafficRequest(BaseModel):
+    method: str
+    path: str
+    status_code: Optional[int] = None
